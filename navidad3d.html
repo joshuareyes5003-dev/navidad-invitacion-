@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Una invitación de Navidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#070c24;--gold:#ffd98a;--red:#c8283c;--snow:#eaf1ff;--paper:#fbf3e4;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--ink);overflow:hidden;font-family:'Cormorant Garamond',Georgia,serif;color:var(--snow);-webkit-tap-highlight-color:transparent}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.scr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 24px;opacity:0;pointer-events:none;transition:opacity .9s}
+.scr.on{opacity:1}
+.scr.on button,.scr.on .env,.scr.on .card{pointer-events:auto}
+h1,h2{font-family:'Mountains of Christmas',cursive,serif;font-weight:700;color:var(--gold);text-shadow:0 0 14px rgba(255,200,110,.7),0 0 40px rgba(255,170,70,.4);line-height:1.08}
+p{font-size:1.15rem;line-height:1.4;opacity:.88;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.cap{font-size:.95rem;font-style:italic;letter-spacing:.12em;opacity:.7}
+.top{justify-content:flex-start;padding-top:10vh;gap:.6rem}
+.mid{justify-content:center;gap:1rem}
+.bot{justify-content:flex-end;padding-bottom:8vh}
+h1{font-size:clamp(3.6rem,17vw,6rem)}
+h2{font-size:clamp(2rem,9vw,3.1rem)}
+button{font:700 1.25rem 'Mountains of Christmas',cursive,serif;color:#3b0a12;background:linear-gradient(#ffe29a,#f2a93b);border:0;border-radius:999px;padding:.7rem 2.2rem;cursor:pointer;box-shadow:0 0 26px rgba(255,190,90,.6),0 4px 0 #a86a14;transition:transform .15s}
+button:active{transform:translateY(3px)}
+button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.dots{display:flex;gap:10px;margin-top:.3rem}
+.dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25);transition:.5s}
+.dots i.l{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+#fl{position:fixed;inset:0;background:#fff8e0;opacity:0;pointer-events:none}
+#fl.go{animation:fl 1.8s ease-out}
+@keyframes fl{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+.env{position:relative;width:min(78vw,300px);height:min(52vw,200px);cursor:pointer;animation:fl2 3s ease-in-out infinite}
+@keyframes fl2{50%{transform:translateY(-8px)}}
+.env .b{position:absolute;inset:0;background:linear-gradient(#b02336,#8e1829);border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.env .f{position:absolute;left:0;right:0;top:0;height:62%;background:#c8283c;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .8s}
+.env .s{position:absolute;left:50%;top:44%;width:46px;height:46px;margin:-23px;border-radius:50%;background:radial-gradient(#ffe9a8,#d9962b);display:grid;place-items:center;font-size:1.4rem;box-shadow:0 2px 10px rgba(0,0,0,.4);transition:opacity .4s}
+.env.open{animation:none}.env.open .f{transform:rotateX(180deg)}.env.open .s{opacity:0}
+.card{background:var(--paper);color:#4a2a22;border-radius:6px;padding:2rem 1.6rem 1.6rem;width:min(88vw,380px);box-shadow:0 20px 60px rgba(0,0,0,.6);transform:scale(.92);transition:transform .9s}
+.on .card{transform:none}
+.card h2{color:#8e1829;text-shadow:none;font-size:clamp(1.8rem,8vw,2.4rem);margin-bottom:.8rem}
+.card p{color:#4a2a22;font-size:1.2rem;font-style:italic;opacity:1;text-shadow:none;margin-bottom:1rem}
+.fr{width:120px;height:120px;margin:0 auto 1.2rem;border:6px solid #fff;outline:1px solid #d9c9a8;background:radial-gradient(#1d4a3a,#0f2a21);display:grid;place-items:center;font-size:3.6rem;transform:rotate(-3deg);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.card button{font-size:1.05rem;padding:.55rem 1.6rem}
+@media (prefers-reduced-motion:reduce){.env{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<section class="scr mid on" id="s0">
+  <p class="cap">Una invitación mágica</p>
+  <h1 id="para">Para ti</h1>
+  <p>Alguien encendió esta noche solo para ti.</p>
+  <button id="go">Entrar</button>
+</section>
+<section class="scr top" id="s1">
+  <h2>Enciende los árboles</h2>
+  <p>Toca cada uno para despertar la noche</p>
+  <div class="dots"><i></i><i></i><i></i></div>
+</section>
+<section class="scr top" id="s2"><h2>¿Quieres pasar Navidad conmigo?</h2></section>
+<section class="scr bot" id="s2b"><button id="yes">Sí</button></section>
+<section class="scr mid" id="s3">
+  <div class="env" id="env" role="button" tabindex="0" aria-label="Abrir la carta"><div class="b"></div><div class="f"></div><div class="s">❤</div></div>
+  <h2 style="font-size:2rem">Tienes una carta</h2>
+  <p>Toca el sobre para abrirlo</p>
+</section>
+<section class="scr mid" id="s4">
+  <div class="card">
+    <div class="fr">🎄</div>
+    <h2 id="tit"></h2>
+    <p id="msg"></p>
+    <button id="again">Ver de nuevo</button>
+  </div>
+</section>
+<div id="fl"></div>
+
+<script src="three.min.js"></script>
+<script>
+// ✏️ Personaliza aquí
+const CFG={
+  para:'Para ti',
+  titulo:'Eres mi persona favorita para esta Navidad',
+  mensaje:'Quiero que cada luz, cada abrazo y cada brindis de estas fiestas sea contigo. Gracias por ser mi mejor regalo del año.'
+};
+const $=id=>document.getElementById(id),R=Math.random,TAU=Math.PI*2;
+$('para').textContent=CFG.para;$('tit').textContent=CFG.titulo;$('msg').textContent=CFG.mensaje;
+function show(...ids){document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',ids.includes(e.id)))}
+
+const cv=$('c'),renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,1,.1,200),rig=new THREE.Group();
+scene.add(rig);scene.fog=new THREE.FogExp2(0x2a3472,.038);
+const ADD=THREE.AdditiveBlending;
+
+function tex(draw,w,h){const k=document.createElement('canvas');k.width=w;k.height=h||w;draw(k.getContext('2d'),w,k.height);return new THREE.CanvasTexture(k)}
+const dot=tex((g,w)=>{const r=g.createRadialGradient(w/2,w/2,0,w/2,w/2,w/2);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.3,'rgba(255,255,255,.5)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,w,w)},128);
+const starTex=tex((g,w)=>{g.drawImage(dot.image,0,0);g.fillStyle='#fff';g.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4,r=i%2?w*.07:w*.46;g.lineTo(w/2+Math.cos(a)*r,w/2+Math.sin(a)*r)}g.closePath();g.fill()},128);
+const beamTex=tex((g,w,h)=>{const r=g.createLinearGradient(0,0,0,h);r.addColorStop(0,'rgba(255,232,170,.95)');r.addColorStop(.5,'rgba(255,215,130,.32)');r.addColorStop(1,'rgba(255,215,130,0)');g.fillStyle=r;g.fillRect(0,0,w,h)},8,128);
+const moonTex=tex((g,w)=>{const r=g.createRadialGradient(w/2,w/2,0,w/2,w/2,w/2);r.addColorStop(0,'rgba(255,248,215,1)');r.addColorStop(.14,'rgba(255,246,214,1)');r.addColorStop(.16,'rgba(255,240,200,.35)');r.addColorStop(1,'rgba(255,240,200,0)');g.fillStyle=r;g.fillRect(0,0,w,w)},256);
+scene.background=tex((g,w,h)=>{const r=g.createLinearGradient(0,0,0,h);r.addColorStop(0,'#04081c');r.addColorStop(.3,'#101a46');r.addColorStop(.55,'#2a3472');r.addColorStop(1,'#2a3472');g.fillStyle=r;g.fillRect(0,0,w,h)},4,256);
+const spr=(map,col,sc,op)=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map,color:col,transparent:true,opacity:op,blending:ADD,depthWrite:false,fog:false}));s.scale.set(sc,sc,1);return s};
+
+// luces y suelo
+scene.add(new THREE.HemisphereLight(0x9bb0ff,0x1a2048,.75));
+const ml=new THREE.DirectionalLight(0xbcd0ff,.8);ml.position.set(4,8,5);scene.add(ml);
+const gg=new THREE.PlaneGeometry(90,90,90,90);gg.rotateX(-Math.PI/2);
+for(let i=0,p=gg.attributes.position;i<p.count;i++){const X=p.getX(i),Z=p.getZ(i),m=Math.min(1,Math.max(0,(Math.hypot(X,Z+1)-6)/6));p.setY(i,m*(Math.sin(X*.3)*Math.cos(Z*.25)*.9+Math.sin(X*.9+Z*.7)*.15))}
+gg.computeVertexNormals();scene.add(new THREE.Mesh(gg,new THREE.MeshStandardMaterial({color:0xb4c4ec,roughness:1})));
+const moon=spr(moonTex,0xffffff,11,1);moon.position.set(6,10,-26);scene.add(moon);
+const sp=[];for(let i=0;i<260;i++){const a=R()*TAU,e=.15+R()*1.2,r=90;sp.push(Math.cos(a)*Math.cos(e)*r,Math.sin(e)*r,Math.sin(a)*Math.cos(e)*r*-1)}
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
+const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:2.2,sizeAttenuation:false,transparent:true,depthWrite:false,fog:false}));scene.add(stars);
+
+// pinos lejanos
+const farM=new THREE.MeshStandardMaterial({color:0x0d1c33,roughness:1}),farG=[0,1,2].map(k=>new THREE.ConeGeometry(1.1-k*.25,1.8,8));
+for(let i=0;i<48;i++){const g=new THREE.Group();farG.forEach((geo,k)=>{const m=new THREE.Mesh(geo,farM);m.position.y=1.2+k;g.add(m)});
+  g.scale.setScalar(.8+R()*1.4);g.position.set((R()-.5)*52,0,-9-R()*24);scene.add(g)}
+
+// pinos protagonistas
+const TIERS=[[.6,1.6,1.25],[1.5,1.5,1],[2.35,1.4,.72]],LC=[0xff4d63,0xffd45a,0x7fe3ff,0xfff4d8];
+const snowM=new THREE.MeshStandardMaterial({color:0xeef4ff,roughness:1,emissive:0x223355,emissiveIntensity:.35});
+const dkM=new THREE.MeshStandardMaterial({color:0x4a2c18});
+function makeTree(px,pz,s){
+  const g=new THREE.Group();g.position.set(px,0,pz);g.scale.setScalar(s);rig.add(g);
+  const mat=new THREE.MeshStandardMaterial({color:0x14452f,roughness:.9});
+  const tr=new THREE.Mesh(new THREE.CylinderGeometry(.18,.24,.8,8),dkM);tr.position.y=.4;g.add(tr);
+  TIERS.forEach(([y0,h,r])=>{
+    const c=new THREE.Mesh(new THREE.ConeGeometry(r,h,20),mat);c.position.y=y0+h/2;g.add(c);
+    const k=.4,cap=new THREE.Mesh(new THREE.ConeGeometry(r*k*1.08,h*k,20),snowM);cap.position.y=y0+h-h*k/2+.01;g.add(cap)});
+  const lg=LC.map(c=>{const p=[];for(let k=0;k<18;k++){const T_=TIERS[k%3],v=.1+R()*.7,a=R()*TAU,r=T_[2]*(1-v)*1.06;p.push(Math.cos(a)*r,T_[0]+v*T_[1],Math.sin(a)*r)}
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+    const m=new THREE.PointsMaterial({map:dot,color:c,size:.3,transparent:true,opacity:0,blending:ADD,depthWrite:false,fog:false});g.add(new THREE.Points(geo,m));return m});
+  const star=spr(starTex,0xffe08a,1,.25);star.position.y=3.95;g.add(star);
+  const light=new THREE.PointLight(0xffc27a,0,9,2);light.position.set(0,2.2,1.4);g.add(light);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(1.3,1.45,48),new THREE.MeshBasicMaterial({color:0xffd98a,transparent:true,opacity:.6,blending:ADD,depthWrite:false,fog:false}));
+  ring.rotation.x=-Math.PI/2;ring.position.y=.06;g.add(ring);
+  const hit=new THREE.Mesh(new THREE.CylinderGeometry(1.8,1.8,4.4,8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.y=2.2;g.add(hit);
+  return{g,mat,lg,star,light,ring,hit,s,l:0,lit:false};
+}
+const trees=[[-2.7,-1.2,1],[0,-2.4,1.15],[2.7,-1,.9]].map(a=>makeTree(...a));
+
+// haces de luz en "A"
+const beams=new THREE.Group();rig.add(beams);
+const A=new THREE.Vector3(0,5.4,-2.6),BP=[new THREE.Vector3(-3.6,0,.2),new THREE.Vector3(3.6,0,.2)],bg=[];
+BP.forEach(P=>{const d=A.clone().sub(P),len=d.length(),grp=new THREE.Group();
+  [[.8,.55],[.36,.8]].forEach(([rb,op])=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,rb,len,20,1,true),new THREE.MeshBasicMaterial({map:beamTex,transparent:true,opacity:0,blending:ADD,depthWrite:false,side:THREE.DoubleSide,fog:false}));m.userData.op=op;grp.add(m)});
+  grp.position.copy(P.clone().add(A).multiplyScalar(.5));grp.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());beams.add(grp);bg.push(grp)});
+const NS=260,spa=new Float32Array(NS*3),sd=Array.from({length:NS},()=>({u:R(),s:R()<.5?0:1,o:R()*TAU,r:R()}));
+const spg=new THREE.BufferGeometry();spg.setAttribute('position',new THREE.BufferAttribute(spa,3));
+const spm=new THREE.PointsMaterial({map:dot,color:0xffe3a0,size:.17,transparent:true,opacity:0,blending:ADD,depthWrite:false,fog:false});
+const spp=new THREE.Points(spg,spm);spp.frustumCulled=false;beams.add(spp);
+const apex=spr(starTex,0xfff0c0,3,0);apex.position.copy(A);beams.add(apex);
+
+// muñeco de nieve
+const sm=new THREE.Group();sm.position.set(0,-3,1.1);rig.add(sm);
+const wm=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.8,emissive:0x334466,emissiveIntensity:.5});
+const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);sm.add(o);return o};
+const sph=r=>new THREE.SphereGeometry(r,28,20),dk=new THREE.MeshBasicMaterial({color:0x1b1530}),red=new THREE.MeshStandardMaterial({color:0xc8283c,roughness:.7});
+add(sph(.55),wm,0,.55,0);add(sph(.4),wm,0,1.3,0);add(sph(.3),wm,0,1.85,0);
+[-.1,.1].forEach(x=>add(sph(.035),dk,x,1.88,.28));
+const nz=new THREE.ConeGeometry(.05,.24,10);nz.rotateX(Math.PI/2);add(nz,new THREE.MeshStandardMaterial({color:0xff8a2a}),0,1.83,.38);
+[-.17,.17].forEach(x=>{const b=add(sph(.06),new THREE.MeshBasicMaterial({color:0xff8fa8}),x,1.79,.25);b.scale.set(1,.6,.3)});
+const sl=add(new THREE.TorusGeometry(.05,.012,6,12,Math.PI),dk,0,1.8,.285);sl.rotation.z=Math.PI;
+const sc=add(new THREE.TorusGeometry(.3,.07,10,24),red,0,1.57,0);sc.rotation.x=Math.PI/2;
+add(new THREE.BoxGeometry(.1,.3,.06),red,.17,1.43,.3);
+add(new THREE.CylinderGeometry(.3,.3,.03,20),dkM,0,2.1,0);add(new THREE.CylinderGeometry(.19,.21,.3,20),dkM,0,2.27,0);add(new THREE.CylinderGeometry(.215,.215,.06,20),red,0,2.15,0);
+const sglow=spr(dot,0xffd9a0,4.5,0);sglow.position.set(0,1.2,-.5);sm.add(sglow);
+const slight=new THREE.PointLight(0xffd6a0,0,7,2);slight.position.set(0,1.8,1.8);sm.add(slight);
+
+// nieve y neblina
+const NF=520,fa=new Float32Array(NF*3),fv=[];
+for(let i=0;i<NF;i++){fa[i*3]=(R()-.5)*26;fa[i*3+1]=R()*10;fa[i*3+2]=-12+R()*22;fv.push(.35+R()*.6)}
+const fg=new THREE.BufferGeometry();fg.setAttribute('position',new THREE.BufferAttribute(fa,3));
+scene.add(new THREE.Points(fg,new THREE.PointsMaterial({map:dot,color:0xffffff,size:.11,transparent:true,opacity:.9,depthWrite:false})));
+const fogT=tex((g,w)=>{const r=g.createRadialGradient(w/2,w/2,0,w/2,w/2,w/2);r.addColorStop(0,'rgba(190,200,255,.7)');r.addColorStop(1,'rgba(190,200,255,0)');g.fillStyle=r;g.fillRect(0,0,w,w)},128);
+const banks=[];for(let i=0;i<12;i++){const b=spr(fogT,0xffffff,9+R()*5,.22);b.material.blending=THREE.NormalBlending;b.position.set((R()-.5)*22,.5+R()*.6,2-R()*12);b.userData.v=(R()-.5)*.25;scene.add(b);banks.push(b)}
+
+// fuegos artificiales
+let fw=[],VW=4;
+function boom(){const n=70,p=new Float32Array(n*3),v=[],cx=(R()-.5)*2*VW*.8,cy=3.2+R()*3,cz=-3-R()*2,col=[0xff5a6e,0xffd45a,0x7fe3ff,0xfff4d8,0x9dff9a][R()*5|0];
+  for(let i=0;i<n;i++){p[i*3]=cx;p[i*3+1]=cy;p[i*3+2]=cz;const a=R()*TAU,b=Math.acos(2*R()-1),s=1.2+R()*2.2;v.push(Math.sin(b)*Math.cos(a)*s,Math.cos(b)*s,Math.sin(b)*Math.sin(a)*s)}
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));
+  const m=new THREE.PointsMaterial({map:dot,color:col,size:.2,transparent:true,blending:ADD,depthWrite:false,fog:false}),pts=new THREE.Points(geo,m);pts.frustumCulled=false;scene.add(pts);fw.push({pts,geo,m,p,v,t:0})}
+const flash=spr(dot,0xfff0c0,1,0);flash.position.set(0,2.6,1);rig.add(flash);
+
+// estado
+let S='intro',T=0,last=0,bm=0,rev=0,sn=0,cele=0,K=1;
+function resize(){
+  const W=innerWidth,H=innerHeight,a=W/H,vf=a<1?62:48;
+  renderer.setSize(W,H);cam.aspect=a;cam.fov=vf;cam.updateProjectionMatrix();
+  const hw=Math.tan(vf*Math.PI/360)*7*a;K=Math.min(1,hw/3.5);rig.scale.setScalar(K);
+  VW=Math.tan(vf*Math.PI/360)*10*a;
+}
+function updTree(t){
+  t.l+=((t.lit?1:0)-t.l)*.05;const l=t.l;
+  t.mat.emissive.setRGB(.02*l,.15*l,.09*l);
+  t.lg.forEach((m,i)=>m.opacity=l*(.55+.45*Math.sin(T*3+i*1.7)));
+  t.light.intensity=l*(2.8+.4*Math.sin(T*7+t.s*5));
+  t.star.material.opacity=.25+.75*l;t.star.scale.setScalar(.9+.4*l+.1*l*Math.sin(T*3));
+  t.ring.material.opacity=S==='trees'?(1-l)*(.35+.3*Math.sin(T*3)):0;
+}
+const CT={intro:[8.4,.7],trees:[7,.3],beams:[7,.4],ask:[6.2,.3],cele:[7,.5],letter:[7.5,.5]};
+function frame(ms){
+  const dt=Math.min((ms-last)/1000||0,.05);last=ms;T+=dt;
+  const bsc=S==='beams'||S==='ask';
+  bm+=((bsc?1:0)-bm)*(bsc?.04:.03);
+  if(bsc)rev=Math.min(1,rev+dt*.45);else if(S!=='cele')rev=0;
+  sn+=((S==='ask'?1:0)-sn)*.04;
+  trees.forEach(updTree);
+  trees[1].g.position.y+=((bsc?-4.6:0)-trees[1].g.position.y)*.05;
+  // haces
+  bg.forEach(g=>g.children.forEach(m=>m.material.opacity=bm*m.userData.op*.55));
+  spm.opacity=bm*(.7+.3*Math.sin(T*6));
+  for(let i=0;i<NS;i++){const p=sd[i],u=(p.u+T*.08)%1;
+    if(u>rev){spa[i*3+1]=-50;continue}
+    const P=BP[p.s],w=u,rr=.8*(1-w)*p.r;
+    spa[i*3]=P.x+(A.x-P.x)*w+Math.cos(p.o)*rr;spa[i*3+1]=P.y+(A.y-P.y)*w;spa[i*3+2]=P.z+(A.z-P.z)*w+Math.sin(p.o)*rr}
+  spg.attributes.position.needsUpdate=true;
+  apex.material.opacity=bm*(rev>.9?1:0);apex.material.rotation=T*.3;apex.scale.setScalar(2.6+.3*Math.sin(T*3));
+  // muñeco
+  sm.position.y=-3+3*sn+Math.sin(T*2)*.04*sn;sm.rotation.y=Math.sin(T*1.2)*.25;
+  slight.intensity=1.8*sn;sglow.material.opacity=.4*sn;
+  // flash de celebración
+  if(S==='cele'){cele+=dt;if(cele>.5&&R()<dt*5)boom();flash.material.opacity=Math.max(0,1-cele*.6);flash.scale.setScalar(2+cele*8)}else flash.material.opacity=0;
+  fw=fw.filter(f=>{f.t+=dt;const q=f.p;for(let i=0;i<q.length/3;i++){q[i*3]+=f.v[i*3]*dt;q[i*3+1]+=f.v[i*3+1]*dt;q[i*3+2]+=f.v[i*3+2]*dt;f.v[i*3+1]-=1.8*dt;f.v[i*3]*=.99;f.v[i*3+2]*=.99}
+    f.geo.attributes.position.needsUpdate=true;f.m.opacity=Math.max(0,1-f.t/1.8);
+    if(f.t>1.8){scene.remove(f.pts);f.geo.dispose();f.m.dispose();return false}return true});
+  // ambiente
+  for(let i=0;i<NF;i++){fa[i*3+1]-=fv[i]*dt;fa[i*3]+=Math.sin(T+i)*.15*dt;if(fa[i*3+1]<0)fa[i*3+1]=10}
+  fg.attributes.position.needsUpdate=true;
+  banks.forEach(b=>{b.position.x+=b.userData.v*dt;if(Math.abs(b.position.x)>13)b.userData.v*=-1});
+  stars.material.opacity=.6+.3*Math.sin(T*1.3);
+  // cámara
+  const[cz,cy]=CT[S]||CT.intro,ty=1.9*K+.5;
+  cam.position.x+=(Math.sin(T*.25)*.35-cam.position.x)*.03;cam.position.y+=(ty+cy-cam.position.y)*.03;cam.position.z+=(cz-cam.position.z)*.03;
+  cam.lookAt(0,ty,0);
+  renderer.render(scene,cam);requestAnimationFrame(frame);
+}
+
+// flujo
+function reset(){S='intro';trees.forEach(t=>t.lit=false);document.querySelectorAll('.dots i').forEach(i=>i.classList.remove('l'));
+  $('env').classList.remove('open');cele=0;show('s0')}
+$('go').onclick=()=>{S='trees';show('s1')};
+const ray=new THREE.Raycaster(),mv=new THREE.Vector2();
+cv.addEventListener('pointerdown',e=>{
+  if(S!=='trees')return;
+  mv.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mv,cam);
+  const h=ray.intersectObjects(trees.filter(t=>!t.lit).map(t=>t.hit),false)[0];if(!h)return;
+  const i=trees.findIndex(t=>t.hit===h.object);trees[i].lit=true;document.querySelectorAll('.dots i')[i].classList.add('l');
+  if(trees.every(t=>t.lit)){setTimeout(()=>{S='beams';show()},1200);setTimeout(()=>{S='ask';show('s2','s2b')},4200)}
+});
+$('yes').onclick=()=>{S='cele';cele=0;show();const f=$('fl');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');setTimeout(()=>{S='letter';show('s3')},5400)};
+const open=()=>{$('env').classList.add('open');setTimeout(()=>show('s4'),900)};
+$('env').onclick=open;$('env').onkeydown=e=>{if(e.key==='Enter'||e.key===' ')open()};
+$('again').onclick=reset;
+addEventListener('resize',resize);resize();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
